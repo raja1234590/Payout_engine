@@ -16,10 +16,23 @@ from django_q.tasks import async_task
 def merchant_dashboard(request):
     merchant_id = request.headers.get('X-Merchant-Id', 1)
     try:
-        merchant = Merchant.objects.get(id=merchant_id)
-    except Merchant.DoesNotExist:
-        return Response({'error': 'Merchant not found'}, status=404)
-        
+        merchant_id = int(merchant_id)
+    except (TypeError, ValueError):
+        merchant_id = 1
+
+    merchant, created = Merchant.objects.get_or_create(
+        id=merchant_id,
+        defaults={'name': 'Test Merchant'}
+    )
+
+    if created:
+        LedgerEntry.objects.create(
+            merchant=merchant,
+            amount=500000,
+            entry_type='CREDIT',
+            reference='initial-seed'
+        )
+
     serializer = MerchantSerializer(merchant)
     return Response(serializer.data)
 
