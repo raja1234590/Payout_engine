@@ -1,11 +1,20 @@
 # Playto Payout Engine - Founding Engineer Challenge
 
-## Project Description
-A minimal payout engine for merchants. Merchants accumulate balance in paise from credits, request payouts, and the backend processes those payouts asynchronously. The system is designed to handle balance integrity, concurrency, and idempotency.
+## Live Deployment
+- **Frontend:** https://payout-engine.vercel.app/
+- **Backend API:** https://payout-engine-x94c.onrender.com
 
 ## Tech Stack
 - **Backend:** Django, Django REST Framework, Django-Q (database-backed job queue), PostgreSQL (SQLite locally for simplicity)
 - **Frontend:** React, Vite, Tailwind CSS v4
+
+## Payout Creation Behavior
+When requesting a payout via `POST /api/v1/payouts`, the system checks the merchant's available balance before creating the payout:
+- **Sufficient Funds:** If the merchant's balance is greater than or equal to the payout amount, the payout is created with status "pending" and queued for processing by the background worker.
+- **Insufficient Funds:** If the balance is less than the payout amount, the API returns an error "insufficient funds" and no payout is created.
+- **Same Bank Account ID:** Multiple payout requests for the same bank account ID (merchant) will succeed only if the balance allows each one. For example, if the balance is 200,000 paise and you request two payouts of 100,000 paise each, both will be created. But if you request three, the third will fail with "insufficient funds".
+
+This ensures that payouts are only initiated when funds are available, preventing overdrafts.
 
 ## Setup Instructions (Windows)
 We use natively isolated processes. No Docker is required. Django-Q uses the database as a durable event queue.
@@ -50,7 +59,7 @@ npm run dev
 
 Open the provided Vite URL, usually `http://localhost:5173`.
 
-## Local API Endpoints
+## API Endpoints
 - `GET /api/v1/merchants/me` — fetch the merchant dashboard
 - `POST /api/v1/payouts` — request a payout
   - Required header: `Idempotency-Key: <uuid>`
