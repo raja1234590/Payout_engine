@@ -85,7 +85,7 @@ Deploy via Render or Railway using the included `dj-database-url` integration. B
 - a worker process for `python manage.py qcluster`
 - `VITE_API_URL` for the frontend build
 
-## Screenshots
-- Merchant dashboard showing available balance, held balance, recent transactions, and payout history.
-- Postman request example for `POST /api/v1/payouts` with `Idempotency-Key` header.
-- Local app workflow from frontend to backend to background processing.
+.
+<img width="1034" height="772" alt="Screenshot 2026-04-25 162540" src="https://github.com/user-attachments/assets/b8c18187-b846-4cd6-b1b8-3bcb0f19305a" />
+<img width="921" height="722" alt="Screenshot 2026-04-25 162446" src="https://github.com/user-attachments/assets/02952f9b-4b80-4057-a8c2-8139c7f793a9" />
+
